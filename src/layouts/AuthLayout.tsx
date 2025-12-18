@@ -1,4 +1,3 @@
-import { Toaster } from "@/components/ui/sonner"
 import type { ReactNode } from "react"
 
 
@@ -12,7 +11,7 @@ export const AuthLayout = ({ children }: Props) => {
       <main className="w-full h-screen flex justify-center items-center p-4 sm:p-0">
         {children}
       </main>
-      <Toaster />
+      
     </>
 
   )

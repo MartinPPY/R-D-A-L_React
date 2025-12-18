@@ -2,7 +2,7 @@ import { Navigate, Route } from "react-router-dom"
 import { RoutesWithNotFound } from "./components/RoutesWithNotFound"
 import { Login } from "./auth/Login"
 import { Register } from "./auth/Register"
-import { Alumno } from "./private/Alumno"
+import { Alumno } from "./private/alumno/Alumno"
 import { PrivateGuard } from "./guards/PrivateGuard"
 
 export const AppRouter = () => {

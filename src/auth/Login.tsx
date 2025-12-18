@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
+import { useAuth } from "@/context/AuthContext"
 import { AuthLayout } from "@/layouts/AuthLayout"
 import { api } from "@/services/api.service"
 import { useState } from "react"
@@ -24,6 +25,7 @@ export const Login = () => {
   const { register, handleSubmit, formState: { }, reset } = useForm<LoginData>()
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState(null)
+  const {setAuthenticated} = useAuth()
   const navigate = useNavigate()
 
   const onSubmit: SubmitHandler<LoginData> = async (data) => {
@@ -40,9 +42,8 @@ export const Login = () => {
 
       const responseData: LoginRespose = response.data
 
-      console.log(response)
-
       sessionStorage.setItem('token', responseData.token)
+      setAuthenticated(true)
 
       switch (responseData.roleId) {
         case 5:
