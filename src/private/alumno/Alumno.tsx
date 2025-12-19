@@ -1,6 +1,7 @@
 import { Separator } from "@/components/ui/separator"
 import { AlumnoLayout } from "@/layouts/AlumnoLayout"
 import { AlumnoTabs } from "./components/AlumnoTabs"
+import { Summary } from "./components/Summary"
 
 export const Alumno = () => {
   return (
@@ -14,11 +15,9 @@ export const Alumno = () => {
       </header>
 
       {/* resumen */}
-      <AlumnoTabs />
-
-
-
+      <Summary/>
       {/* horas registradas - registrar horas - ver pagos */}
+      <AlumnoTabs />
 
     </AlumnoLayout>
   )
