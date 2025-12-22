@@ -37,8 +37,8 @@ export const Register = () => {
                     label: 'Deshacer',
                     onClick: () => { }
                 },
-                duration:3000,
-                position:"top-center"
+                duration: 3000,
+                position: "top-center"
             })
             navigate('/login')
 
@@ -59,45 +59,114 @@ export const Register = () => {
 
     return (
         <AuthLayout>
-            <Card className="w-full sm:w-2/5">
-                <CardHeader className="text-center">
-                    <CardTitle> Registro de usuario </CardTitle>
-                    <CardDescription> Completa los campos para registrarte</CardDescription>
+            <Card className="w-full sm:w-2/5 shadow-md">
+                <CardHeader className="text-center space-y-2">
+                    <CardTitle className="text-2xl font-semibold">
+                        Registro de usuario
+                    </CardTitle>
+                    <CardDescription>
+                        Completa los campos para crear tu cuenta
+                    </CardDescription>
                 </CardHeader>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <CardContent className="flex flex-col gap-2">
-                        <fieldset className="flex flex-col gap-2">
-                            <Label> Email: </Label>
-                            <Input type="email" required {...register('email')} />
-                        </fieldset>
-                        <fieldset className="flex flex-col gap-2">
-                            <Label> Nombre </Label>
-                            <Input type="text" required {...register('name')} />
-                        </fieldset>
-                        <fieldset className="flex flex-col gap-2">
-                            <Label> Apellido </Label>
-                            <Input type="text" required  {...register('lastname')} />
-                        </fieldset>
-                        <fieldset className="flex flex-col gap-2">
-                            <Label> Contraseña: </Label>
-                            <Input type="password" required  {...register('password')} />
+
+                <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="flex flex-col gap-4"
+                    noValidate
+                >
+                    <CardContent className="flex flex-col gap-4 px-6">
+                        {/* Email */}
+                        <fieldset className="flex flex-col gap-1">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="correo@ejemplo.com"
+                                autoComplete="email"
+                                required
+                                aria-invalid={!!error}
+                                {...register('email')}
+                            />
                         </fieldset>
 
+                        {/* Nombre */}
+                        <fieldset className="flex flex-col gap-1">
+                            <Label htmlFor="name">Nombre</Label>
+                            <Input
+                                id="name"
+                                type="text"
+                                placeholder="Juan"
+                                autoComplete="given-name"
+                                required
+                                aria-invalid={!!error}
+                                {...register('name')}
+                            />
+                        </fieldset>
+
+                        {/* Apellido */}
+                        <fieldset className="flex flex-col gap-1">
+                            <Label htmlFor="lastname">Apellido</Label>
+                            <Input
+                                id="lastname"
+                                type="text"
+                                placeholder="Pérez"
+                                autoComplete="family-name"
+                                required
+                                aria-invalid={!!error}
+                                {...register('lastname')}
+                            />
+                        </fieldset>
+
+                        {/* Contraseña */}
+                        <fieldset className="flex flex-col gap-1">
+                            <Label htmlFor="password">Contraseña</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="••••••••"
+                                autoComplete="new-password"
+                                required
+                                aria-invalid={!!error}
+                                {...register('password')}
+                            />
+                        </fieldset>
                     </CardContent>
 
-                    <CardFooter className="mt-4 flex flex-col gap-2">
-                        <Button className="w-full" disabled={loading} >
-                            {
-                                loading ? (<> <Spinner /> {btnText} </>) : (btnText)
-                            }
+                    <CardFooter className="flex flex-col gap-3 px-6 pb-6">
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={loading}
+                            aria-busy={loading}
+                        >
+                            {loading ? (
+                                <span className="flex items-center gap-2">
+                                    <Spinner aria-hidden="true" />
+                                    <span aria-live="polite">{btnText}</span>
+                                </span>
+                            ) : (
+                                btnText
+                            )}
                         </Button>
-                        <Link to="/login" > <Button variant="link" disabled={loading} > Iniciar Sesion</Button> </Link>
+
+                        <Link to="/login" className="text-center">
+                            <Button variant="link" className="px-0" disabled={loading}>
+                                ¿Ya tienes cuenta? Inicia sesión
+                            </Button>
+                        </Link>
                     </CardFooter>
 
-                    {error && (<p className="text-red-600 text-center">{error}</p>)}
-
+                    {error && (
+                        <p
+                            className="text-red-600 text-sm text-center px-6 pb-4"
+                            role="alert"
+                        >
+                            {error}
+                        </p>
+                    )}
                 </form>
             </Card>
+
         </AuthLayout>
     )
 }

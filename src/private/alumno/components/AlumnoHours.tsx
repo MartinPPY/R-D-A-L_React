@@ -43,48 +43,101 @@ export const AlumnoHours = () => {
     }, [])
 
     return (
-        <div className="mt-10">
-            <Card className="p-6">
-                <CardHeader>
-                    <CardTitle> Registro de horas </CardTitle>
-                    <CardDescription> Visualiza todas tus horas registradas por área </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="w-full overflow-x-auto">
-                        <Table className="w-full overflow-x-auto">
-                        <TableCaption>Tus horas del mes {' (Monto por hora : 2500 CLP) '}</TableCaption>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>ID</TableHead>
-                                <TableHead>Fecha</TableHead>
-                                <TableHead>Hora de inicio</TableHead>
-                                <TableHead>Hora de Termino</TableHead>
-                                <TableHead>Horas trabajadas</TableHead>
-                                <TableHead>Monto $</TableHead>
-                                <TableHead>Area de trabajo</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {
-                                hours.map((hour) => (
-                                    <TableRow key={hour.id}>
-                                        <TableCell> {hour.id} </TableCell>
-                                        <TableCell> {hour.date} </TableCell>
-                                        <TableCell> {hour.init_date} </TableCell>
-                                        <TableCell> {hour.end_date} </TableCell>
-                                        <TableCell> {hour.quantity} </TableCell>
-                                        <TableCell className="text-green-500" > {hour.payment} CLP </TableCell>
-                                        <TableCell> {hour.name} </TableCell>
-                                    </TableRow>
-                                ))
-                            }
-                        </TableBody>
-                    </Table>
-                    </div>
+        <section
+            className="mt-10"
+            aria-labelledby="hours-title"
+        >
+            <Card className="shadow-sm">
+                <CardHeader className="space-y-1 px-6 pt-6">
+                    <CardTitle
+                        id="hours-title"
+                        className="text-xl font-semibold tracking-tight"
+                    >
+                        Registro de horas
+                    </CardTitle>
 
+                    <CardDescription id="hours-description">
+                        Visualiza el detalle de las horas registradas por área
+                    </CardDescription>
+                </CardHeader>
+
+                <CardContent className="px-6 pb-6">
+                    <div
+                        className="relative w-full overflow-x-auto rounded-md border"
+                        role="region"
+                        aria-labelledby="hours-title"
+                        aria-describedby="hours-description"
+                    >
+                        <Table>
+                            <TableCaption className="text-sm">
+                                Horas registradas del mes{' '}
+                                <span className="text-muted-foreground">
+                                    (Valor hora: 2.500 CLP)
+                                </span>
+                            </TableCaption>
+
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead scope="col">ID</TableHead>
+                                    <TableHead scope="col">Fecha</TableHead>
+                                    <TableHead scope="col">Inicio</TableHead>
+                                    <TableHead scope="col">Término</TableHead>
+                                    <TableHead scope="col">Horas</TableHead>
+                                    <TableHead scope="col">Monto</TableHead>
+                                    <TableHead scope="col">Área</TableHead>
+                                </TableRow>
+                            </TableHeader>
+
+                            <TableBody>
+                                {hours.length > 0 ? (
+                                    hours.map((hour) => (
+                                        <TableRow
+                                            key={hour.id}
+                                            className="hover:bg-muted/50 transition-colors"
+                                        >
+                                            <TableCell className="font-medium">
+                                                {hour.id}
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <time dateTime={hour.date}>
+                                                    {hour.date}
+                                                </time>
+                                            </TableCell>
+
+                                            <TableCell>{hour.init_date}</TableCell>
+                                            <TableCell>{hour.end_date}</TableCell>
+
+                                            <TableCell>
+                                                {hour.quantity} h
+                                            </TableCell>
+
+                                            <TableCell className="font-semibold text-green-700">
+                                                {hour.payment.toLocaleString()} CLP
+                                            </TableCell>
+
+                                            <TableCell>
+                                                {hour.name}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={7}
+                                            className="text-center text-sm text-muted-foreground py-8"
+                                            role="status"
+                                        >
+                                            No hay horas registradas para este período
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
+        </section>
 
-        </div>
     )
 }
