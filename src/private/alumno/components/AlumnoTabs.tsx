@@ -7,7 +7,7 @@ export const AlumnoTabs = () => {
   return (
     <div className="p-10">
       <Tabs defaultValue="hours">
-        <TabsList>
+        <TabsList className="w-full">
           <TabsTrigger value="hours" > Mis horas </TabsTrigger>
           <TabsTrigger value="form" > Registrar horas </TabsTrigger>
         </TabsList>

@@ -29,7 +29,7 @@ export const HourForm = () => {
     useEffect(() => {
 
         const getRoles = async () => {
-            const response = await api.get('/roles', {
+            const response = await api.get('/role', {
                 headers: {
                     "Content-Type": 'application/json'
                 }
@@ -39,7 +39,7 @@ export const HourForm = () => {
 
         getRoles()
 
-    }, [roles])
+    }, [])
 
     const onSubmit: SubmitHandler<Activity> = async (data) => {
         setLoading(true)

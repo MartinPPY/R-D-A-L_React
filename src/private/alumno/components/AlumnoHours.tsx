@@ -50,7 +50,8 @@ export const AlumnoHours = () => {
                     <CardDescription> Visualiza todas tus horas registradas por área </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <Table>
+                    <div className="w-full overflow-x-auto">
+                        <Table className="w-full overflow-x-auto">
                         <TableCaption>Tus horas del mes {' (Monto por hora : 2500 CLP) '}</TableCaption>
                         <TableHeader>
                             <TableRow>
@@ -79,6 +80,7 @@ export const AlumnoHours = () => {
                             }
                         </TableBody>
                     </Table>
+                    </div>
 
                 </CardContent>
             </Card>
