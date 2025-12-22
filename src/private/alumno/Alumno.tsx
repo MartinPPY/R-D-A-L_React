@@ -3,8 +3,19 @@ import { AlumnoLayout } from "@/layouts/AlumnoLayout"
 import { AlumnoTabs } from "./components/AlumnoTabs"
 import { Summary } from "./components/Summary"
 import { Button } from "@/components/ui/button"
+import { useNavigate } from "react-router-dom"
 
 export const Alumno = () => {
+
+  const navigate = useNavigate()
+
+  const logOut = () => {
+
+    sessionStorage.clear()
+    navigate("/login")
+
+  }
+
   return (
     <AlumnoLayout>
       <header
@@ -55,8 +66,8 @@ export const Alumno = () => {
             aria-label="Acciones del panel"
           >
 
-            <Button>
-              Agregar horas
+            <Button onClick={logOut}>
+              Cerrar Sesión
             </Button>
           </div>
         </div>
