@@ -4,9 +4,28 @@ import { AlumnoTabs } from "./components/AlumnoTabs"
 import { Summary } from "./components/Summary"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
+import { api } from "@/services/api.service"
+import { toast } from "sonner"
+
+interface Summary {
+  quantity: number,
+  payment: number
+}
+
+export interface Props {
+  summary: Summary | null
+  loading: boolean,
+  setSummary: Dispatch<SetStateAction<Summary | null>>
+}
+
+
+
 
 export const Alumno = () => {
 
+  const [loading, setLoading] = useState<boolean>(false)
+  const [summary, setSummary] = useState<Summary | null>(null)
   const navigate = useNavigate()
 
   const logOut = () => {
@@ -15,6 +34,31 @@ export const Alumno = () => {
     navigate("/login")
 
   }
+
+  useEffect(() => {
+    const getSummary = async () => {
+      setLoading(true)
+      try {
+
+        const response = await api.get('activity/summary')
+        setSummary(response.data)
+
+      } catch (error) {
+        toast('Error al cargar el resumen', {
+          duration: 3000,
+          position: 'top-center'
+        })
+        console.error(error)
+
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    getSummary()
+
+  }, [])
+
 
   return (
     <AlumnoLayout>
@@ -77,9 +121,9 @@ export const Alumno = () => {
 
 
       {/* resumen */}
-      <Summary />
+      <Summary loading={loading} summary={summary} setSummary={setSummary} />
       {/* horas registradas - registrar horas - ver pagos */}
-      <AlumnoTabs />
+      <AlumnoTabs loading={loading} setSummary={setSummary} summary={summary} />
 
     </AlumnoLayout>
   )

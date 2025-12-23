@@ -9,6 +9,7 @@ import { api } from "@/services/api.service"
 import { useEffect, useState } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { toast } from "sonner"
+import type { Props } from "../Alumno"
 
 interface Activity {
     date: string,
@@ -18,7 +19,7 @@ interface Activity {
 }
 
 
-export const HourForm = () => {
+export const HourForm = ({ setSummary }: Props) => {
 
 
     const [roles, setRoles] = useState<Role[]>([])
@@ -38,6 +39,12 @@ export const HourForm = () => {
         }
 
         getRoles()
+
+        const getSummary = async () => {
+
+        }
+
+        getSummary()
 
     }, [])
 
@@ -59,6 +66,14 @@ export const HourForm = () => {
                 duration: 3000,
                 position: 'top-center'
             })
+
+            const response = await api.get('activity/summary', {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            setSummary(response.data)
 
         } catch (error) {
 

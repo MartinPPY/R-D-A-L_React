@@ -1,46 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { api } from "@/services/api.service"
 import { DollarSign, Timer,Paperclip } from "lucide-react"
-import { useEffect, useState } from "react"
-import { toast } from "sonner"
+import type { Props } from "../Alumno"
 
 
-interface Summary {
-    quantity: number,
-    payment: number
-}
 
-export const Summary = () => {
-
-    const [summary, setSummary] = useState<Summary>()
-    const [loading, setLoading] = useState<boolean>(false)
-
-    useEffect(() => {
-        const getSummary = async () => {
-            setLoading(true)
-            try {
-
-                const response = await api.get('activity/summary')
-                console.log(response)
-                setSummary(response.data)
-
-            } catch (error) {
-                toast('Error al cargar el resumen', {
-                    duration: 3000,
-                    position: 'top-center'
-                })
-                console.error(error)
-
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        getSummary()
-
-    }, [])
-
-
+export const Summary = ({loading,summary}:Props) => {
 
     return (
         <section
