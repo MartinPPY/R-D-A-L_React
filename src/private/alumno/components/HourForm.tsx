@@ -5,11 +5,11 @@ import { Label } from "@/components/ui/label"
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
 import { Spinner } from "@/components/ui/spinner"
 import type { Role } from "@/models/role.model"
-import { api } from "@/services/api.service"
 import { useEffect, useState } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { toast } from "sonner"
 import type { Props } from "../Alumno"
+import supabase from "@/lib/supabase"
 
 interface Activity {
     date: string,
@@ -30,21 +30,16 @@ export const HourForm = ({ setSummary }: Props) => {
     useEffect(() => {
 
         const getRoles = async () => {
-            const response = await api.get('/role', {
-                headers: {
-                    "Content-Type": 'application/json'
-                }
-            })
-            setRoles(response.data)
+
+            const roles = await supabase.from('roles').select('*')
+            if (!roles.data) {
+                throw new Error('No se han podido cargar las areas de trabajo!')
+            }
+
+            setRoles(roles.data)
         }
 
         getRoles()
-
-        const getSummary = async () => {
-
-        }
-
-        getSummary()
 
     }, [])
 
@@ -52,10 +47,12 @@ export const HourForm = ({ setSummary }: Props) => {
         setLoading(true)
         try {
 
-            await api.post('/activity', data, {
-                headers: {
-                    "Content-Type": 'application/json'
-                }
+            await supabase.rpc('sp_insert_activity', {
+                p_date: data.date,
+                p_hour_init: data.hourInic,
+                p_hour_end: data.hourEnd,
+                p_area_id: data.areaId,
+                p_tarifa: 2500
             })
 
             toast('Actividad creada!', {
@@ -67,13 +64,12 @@ export const HourForm = ({ setSummary }: Props) => {
                 position: 'top-center'
             })
 
-            const response = await api.get('activity/summary', {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
+            const summaryResponse = await supabase.rpc('get_activity_summary')
+            setSummary(summaryResponse.data[0])
 
-            setSummary(response.data)
+
+
+            //setSummary(response.data)
 
         } catch (error) {
 

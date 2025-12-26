@@ -5,28 +5,24 @@ import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
 import { useAuth } from "@/context/AuthContext"
 import { AuthLayout } from "@/layouts/AuthLayout"
-import { api } from "@/services/api.service"
+import supabase from "@/lib/supabase"
 import { useState } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom"
 
-type LoginData = {
-  email: string,
-  password: string
+interface LoginData {
+  email: string;
+  password: string;
 }
 
-interface LoginRespose {
-  roleId: number,
-  token: string
-}
 
 export const Login = () => {
 
   const { register, handleSubmit, formState: { }, reset } = useForm<LoginData>()
   const [loading, setLoading] = useState<boolean>(false)
-  const [error, setError] = useState(null)
-  const { setAuthenticated } = useAuth()
+  const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
+  const { setAuthenticated } = useAuth()
 
   const onSubmit: SubmitHandler<LoginData> = async (data) => {
 
@@ -34,31 +30,33 @@ export const Login = () => {
     setLoading(true)
 
     try {
-      const response = await api.post('/auth/login', data, {
-        headers: {
-          "Content-Type": 'application/json'
-        }
+
+      const response = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password
       })
 
-      const responseData: LoginRespose = response.data
-
-      sessionStorage.setItem('token', responseData.token)
-      setAuthenticated(true)
-
-      switch (responseData.roleId) {
-        case 5:
-          navigate('/alumno')
-          break
-        default:
-          alert('Aun no tienes una pagina para tu perfil!')
-          break
-
+      if (response.error?.status == 400) {
+        setError('Credenciales invalidas!')
+        return
       }
 
+      setAuthenticated(true)
+
+      const profile = await supabase.from('profile').select('*').eq('user_id', response.data.user?.id)
+
+
+      if (profile.data?.length == 0) {
+        setError('No estas registrado!');
+        await supabase.auth.signOut()
+        return;
+      }
+
+      navigate('/alumno')
 
     } catch (error: any) {
 
-      setError(error.response.data.message)
+      console.error(error)
 
     } finally {
       setLoading(false)
@@ -76,6 +74,10 @@ export const Login = () => {
           aria-labelledby="login-title"
         >
           <CardHeader className="text-center space-y-2">
+            <div className="mb-4 rounded-md border border-yellow-300 bg-yellow-50 p-3 text-sm text-yellow-900">
+              <strong>Modo demostración</strong><br />
+              Puedes iniciar sesión con los usuarios de prueba listados abajo.
+            </div>
             <CardTitle
               id="login-title"
               className="text-2xl font-semibold tracking-tight"
@@ -172,6 +174,7 @@ export const Login = () => {
                   Crear cuenta
                 </Link>
               </div>
+
             </CardFooter>
           </form>
 
@@ -185,6 +188,27 @@ export const Login = () => {
               {error}
             </p>
           )}
+
+          <CardFooter>
+            <div className="mt-4 rounded-md bg-muted p-3 text-xs w-full">
+              <p className="font-medium mb-2">Usuarios de prueba:</p>
+
+              <ul className="space-y-1">
+                <li>
+                  <strong>Alumno:</strong><br />
+                  prueba@duocuc.cl<br />
+                  <span className="font-mono">123</span>
+                </li>
+
+                <li>
+                  <strong>Docente:</strong><br />
+                  admin@duoc.cl<br />
+                  <span className="font-mono">123</span>
+                </li>
+              </ul>
+            </div>
+          </CardFooter>
+
         </Card>
 
       </AuthLayout>

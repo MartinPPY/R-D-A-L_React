@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DollarSign, Timer,Paperclip } from "lucide-react"
+import { DollarSign, Timer, Paperclip } from "lucide-react"
 import type { Props } from "../Alumno"
 
 
 
-export const Summary = ({loading,summary}:Props) => {
+export const Summary = ({ loading, summary }: Props) => {
 
     return (
         <section
@@ -44,7 +44,7 @@ export const Summary = ({loading,summary}:Props) => {
                     ) : (
                         <>
                             <p className="text-3xl font-semibold tracking-tight">
-                                {summary?.quantity ?? 0}
+                                {Math.round(summary?.quantity || 0) ?? 0}
                             </p>
                             <p className="text-sm text-muted-foreground">
                                 Horas del mes

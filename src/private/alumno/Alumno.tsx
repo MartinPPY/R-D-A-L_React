@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
 import { api } from "@/services/api.service"
 import { toast } from "sonner"
+import supabase from "@/lib/supabase"
 
 interface Summary {
   quantity: number,
@@ -28,10 +29,10 @@ export const Alumno = () => {
   const [summary, setSummary] = useState<Summary | null>(null)
   const navigate = useNavigate()
 
-  const logOut = () => {
+  const logOut = async () => {
 
-    sessionStorage.clear()
-    navigate("/login")
+    await supabase.auth.signOut()
+    navigate('/login')
 
   }
 
@@ -40,8 +41,8 @@ export const Alumno = () => {
       setLoading(true)
       try {
 
-        const response = await api.get('activity/summary')
-        setSummary(response.data)
+        const summaryResponse = await supabase.rpc('get_activity_summary')
+        setSummary(summaryResponse.data[0])
 
       } catch (error) {
         toast('Error al cargar el resumen', {

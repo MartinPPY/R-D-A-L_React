@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { api } from "@/services/api.service"
+import supabase from "@/lib/supabase"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
@@ -25,7 +25,8 @@ export const AlumnoHours = () => {
         const getActivities = async () => {
             try {
 
-                const response = await api.get('activity')
+                const response = await supabase.rpc('get_activities')
+
                 setHours(response.data)
 
             } catch (error) {

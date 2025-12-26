@@ -1,4 +1,4 @@
-import { api } from "@/services/api.service";
+import supabase from "@/lib/supabase";
 import React, { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 interface Props {
@@ -17,42 +17,36 @@ const AuthContext = createContext<AuthContextType>({
     loading: true
 })
 
+
 export const AuthProvider = ({ children }: Props) => {
+
     const [authenticated, setAuthenticated] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(true)
 
 
     useEffect(() => {
+
         const checkAuth = async () => {
 
-            try {
-                const token = sessionStorage.getItem('token')
+            const auth = await supabase.auth.getSession()
 
-                if (!token) {
-                    setAuthenticated(false)
-                    setLoading(false)
-                    return
-                }
-
-
-                await api.get('/auth/is-authenticated', {
-                    headers: {
-                        "Content-Type": 'application/json',
-                        Authorization: 'Bearer ' + token
-                    }
-                })
-
-                setAuthenticated(true)
-                setLoading(false)
-
-            } catch (error) {
-
-                console.error(error)
+            if (auth.error) {
                 setAuthenticated(false)
-
-            } finally {
                 setLoading(false)
+                console.error(auth.error)
+                return
             }
+
+            if (!auth.data.session) {
+                setAuthenticated(false)
+                setLoading(false)
+                return
+            }
+
+
+            setAuthenticated(true)
+            setLoading(false)
+
         }
 
         checkAuth()

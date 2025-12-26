@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Spinner } from "@/components/ui/spinner"
 import { AuthLayout } from "@/layouts/AuthLayout"
-import { api } from "@/services/api.service"
+import supabase from "@/lib/supabase"
 import { Label } from "@radix-ui/react-label"
 import { useState } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
@@ -20,18 +20,47 @@ type RegisterData = {
 export const Register = () => {
 
     const [loading, setLoading] = useState<boolean>(false)
-    const [error, setError] = useState(null)
+    const [error, setError] = useState<string | null>(null)
     const { register, handleSubmit, reset } = useForm<RegisterData>()
-    const [btnText, setBtnText] = useState('Registrarme')
+    const [btnText, setBtnText] = useState<string>('Registrarme')
     const navigate = useNavigate()
 
     const onSubmit: SubmitHandler<RegisterData> = async (data) => {
         setLoading(true)
         try {
-            setBtnText('Verificando Email')
-            await api.post('/auth/verificate-email', { email: data.email })
+            setBtnText('Verificando Usuario')
+
+            const authResponse = await supabase.auth.signInWithPassword({
+                email: data.email,
+                password: data.password
+            })
+
+            if (authResponse.error?.status == 400) {
+                setError('Verifica tu correo o contraseña!')
+                return
+            }
+
+            if (authResponse.error) {
+                setError('Ha ocurrido un error!')
+                console.error()
+                return
+            }
+
             setBtnText('Cargando...')
-            await api.put('/auth/register', data)
+
+            const registerResponse = await supabase.from('profile').insert({
+                user_id: authResponse.data.user.id,
+                name: data.name,
+                lastname: data.lastname,
+                role_id: 5
+            })
+
+            if (registerResponse.error) {
+                setError('Ha ocurrido un error al registrarse')
+                console.error(registerResponse.error)
+                return
+            }
+
             toast('Registro exitoso!', {
                 action: {
                     label: 'Deshacer',
